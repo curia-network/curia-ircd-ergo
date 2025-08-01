@@ -2,7 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "/entrypoint.sh ergo run --conf /ergo/ircd.yaml"
+startCommand = "ergo run --conf /ircd.yaml"
 healthcheckPath = "/"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
