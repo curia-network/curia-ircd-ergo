@@ -1,0 +1,141 @@
+# Ergo IRC Server Configuration
+# Based on o3-irc-howto.md specifications
+
+network:
+    name: CommonGround
+
+server:
+    name: irc.curia.network
+    listeners:
+        # Plain IRC for local development
+        ":6667":
+            proxy: false
+        # TLS IRC for production
+        ":6697":
+            tls:
+                cert: /ergo/tls/fullchain.pem
+                key: /ergo/tls/privkey.pem
+            min-tls-version: 1.2
+            proxy: false
+            # Server password to restrict direct access (only Soju should connect)
+            password: "${ERGO_PASS}"
+
+    # Enable enforced UTF-8 mode
+    enforce-utf8: true
+    
+    # MOTD
+    motd: |
+        Welcome to CommonGround IRC Network
+        
+        This network is part of the Common Ground ecosystem.
+        Web interface available at: https://embed.curia.network
+        
+        For support, visit: https://curia.network
+
+# Account registration and authentication
+accounts:
+    authentication-enabled: true
+    registration:
+        enabled: false  # Disable direct registration (users come through Soju)
+        verify-timeout: "120s"
+    require-sasl:
+        enabled: false  # Don't require SASL since Soju handles auth
+    nick-reservation:
+        enabled: true
+        additional-nick-limit: 2
+        method: strict
+
+# Services (NickServ, ChanServ, etc.)
+services:
+    nickserv:
+        enabled: true
+        nick: "NickServ"
+        aliases:
+            - "NS"
+    chanserv:
+        enabled: true
+        nick: "ChanServ" 
+        aliases:
+            - "CS"
+    histserv:
+        enabled: true
+        nick: "HistServ"
+        aliases:
+            - "HS"
+
+# Channel settings
+channels:
+    default-modes: "+nt"
+    max-channels-per-client: 100
+    registration:
+        enabled: true
+
+# History settings (in-memory only, no persistent MySQL)
+history:
+    enabled: true
+    channel-length: 2048
+    client-length: 256
+    autoresize-window: "3d"
+    autoreplay-on-join: 0
+    chathistory-maxmessages: 100
+    znc-maxmessages: 500
+    restrictions:
+        expire-time: "1w"
+        query-cutoff: "3d"
+
+# Limits
+limits:
+    nicklen: 32
+    channellen: 64
+    awaylen: 390
+    kicklen: 390
+    topiclen: 390
+    monitor-entries: 100
+    whowas-entries: 100
+    registration-messages: 1024
+
+# Connection limits
+connection-limits:
+    enabled: true
+    cidr-len-ipv4: 32
+    cidr-len-ipv6: 64
+    connections-per-cidr: 12
+    connection-throttling:
+        enabled: true
+        cidr-len-ipv4: 32
+        cidr-len-ipv6: 64
+        connections-per-cidr: 8
+        duration: "10m"
+        ban-duration: "10m"
+
+# Operator configuration
+opers:
+    cg-admin:
+        class: "server-admin"
+        whois-line: "is a CommonGround administrator"
+        password: "${ERGO_OPER_PASS}"
+        
+# IRC operator classes
+oper-classes:
+    server-admin:
+        title: "Server Admin"
+        capabilities:
+            - "oper:local_kill"
+            - "oper:local_ban"
+            - "oper:local_unban"
+            - "oper:nofakelag"
+            - "oper:rehash"
+            - "oper:die" 
+            - "samode"
+
+# Datastore (file-based, no MySQL)
+datastore:
+    path: /ergo/db
+    mysql:
+        enabled: false
+
+# Debug and logging
+logging:
+    - method: stderr
+      type: "*"
+      level: info

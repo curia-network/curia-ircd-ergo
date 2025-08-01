@@ -1,0 +1,19 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "/entrypoint.sh ergo run --conf /ergo/ircd.yaml"
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[env]
+NODE_ENV = "production"
+SERVICE_NAME = "curia-ircd-ergo"
+
+# These environment variables need to be set in Railway dashboard:
+# ERGO_PASS = "your-secure-server-password"
+# ERGO_OPER_PASS = "your-secure-oper-password"
+# TLS_CERT = "-----BEGIN CERTIFICATE-----..."  # Optional: provide actual cert
+# TLS_KEY = "-----BEGIN PRIVATE KEY-----..."   # Optional: provide actual key
