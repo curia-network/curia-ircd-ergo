@@ -3,8 +3,7 @@ builder = "dockerfile"
 
 [deploy]
 # Let Dockerfile CMD handle startup (no override needed)
-healthcheckPath = "/"
-healthcheckTimeout = 30
+
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
