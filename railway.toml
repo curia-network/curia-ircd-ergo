@@ -2,7 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-# Use default entrypoint from official ergochat/ergo image
+# Let Dockerfile CMD handle startup (no override needed)
 healthcheckPath = "/"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
